@@ -333,9 +333,15 @@ L.GPX = L.FeatureGroup.extend({
 
     _parse_gpx_data: function(xml, options) {
         var i, t, l, el, layers = [];
+        // !dokodit ukladanie metadat
+        // var metadata = xml.getElementsByTagName('metadata');
+        // console.log(metadata[0]);
+        // console.log(metadata[0].innerText);
+
+        // console.log(metadata[0].innerHTML);
+        // console.log(metadata[0].textContent);
 
         var name = xml.getElementsByTagName('name');
-        let
         if (name.length > 0) {
             this._info.name = name[0].textContent;
         }
@@ -480,7 +486,7 @@ L.GPX = L.FeatureGroup.extend({
             var _, ll = new L.LatLng(
                 el[i].getAttribute('lat'),
                 el[i].getAttribute('lon'));
-            ll.meta = { time: null, ele: null, hr: null, cad: null, atemp: null, speed: null };
+            ll.meta = { time: null, ele: null, hr: null, cad: null, atemp: null, speed: null, extensions: null };
 
             _ = el[i].getElementsByTagName('time');
             if (_.length > 0) {
@@ -498,6 +504,20 @@ L.GPX = L.FeatureGroup.extend({
                 // elevation as the point before it (if it had one).
                 ll.meta.ele = last != null ? last.meta.ele : null;
             }
+            // !kontrola
+            _ = el[i].getElementsByTagName('extensions');
+
+            if (_.length > 0) {
+                // console.log(_[0].innerText);
+                ll.meta.extensions = _[0].innerText;
+            }
+            // else {
+            //     // If the point doesn't have an <ele> tag, assume it has the same
+            //     // elevation as the point before it (if it had one).
+            //     ll.meta.extensions = last != null ? last.meta.extensions : null;
+            // }
+            // !kontrola
+
             var ele_diff = last != null ? ll.meta.ele - last.meta.ele : 0;
             var dist_3d = last != null ? this._dist3d(last, ll) : 0;
 
